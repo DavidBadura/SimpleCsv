@@ -1,0 +1,16 @@
+{
+    "name": "davidbadura/simple-csv",
+    "keywords": ["csv"],
+    "license": "MIT",
+    "authors": [{
+        "name" : "David Badura",
+        "email" : "d.badura@gmx.de"
+    }],
+    "autoload": {
+        "psr-0": { "": "src/" }
+    },
+    "require": {
+        "php": ">=5.3"
+    },
+    "target-dir" : "DavidBadura/SimpleCsv"
+}

@@ -9,15 +9,60 @@ namespace DavidBadura\SimpleCsv;
 class CsvParser implements \Iterator
 {
 
+    /**
+     *
+     * @var string
+     */
     protected $file;
+
+    /**
+     *
+     * @var string
+     */
     protected $delimiter;
+
+    /**
+     *
+     * @var array
+     */
     protected $header;
+
+    /**
+     *
+     * @var int
+     */
     protected $pointer;
+
+    /**
+     *
+     * @var array
+     */
     protected $row;
+
+    /**
+     *
+     * @var resources
+     */
     protected $handle;
+
+    /**
+     *
+     * @var boolean
+     */
     protected $loaded = false;
+
+    /**
+     *
+     * @var string|null
+     */
     protected $charset = null;
 
+    /**
+     *
+     * @param string $file
+     * @param string $delimiter
+     * @param string $charset
+     */
     public function __construct($file, $delimiter = ',', $charset = null)
     {
         $this->file = $file;
@@ -25,12 +70,20 @@ class CsvParser implements \Iterator
         $this->charset = $charset;
     }
 
+    /**
+     *
+     * @return array
+     */
     public function getHeader()
     {
         $this->load();
         return $this->header;
     }
 
+    /**
+     *
+     * @throws \Exception
+     */
     public function load()
     {
         if ($this->loaded) {
@@ -58,32 +111,54 @@ class CsvParser implements \Iterator
         $this->loaded = true;
     }
 
+    /**
+     *
+     * @return array
+     */
     public function current()
     {
         return $this->row();
     }
 
+    /**
+     *
+     * @return int
+     */
     public function key()
     {
         return $this->pointer;
     }
 
+    /**
+     *
+     */
     public function next()
     {
         $this->row = null;
         $this->pointer++;
     }
 
+    /**
+     *
+     */
     public function rewind()
     {
         $this->loaded = false;
     }
 
+    /**
+     *
+     * @return boolean
+     */
     public function valid()
     {
         return ($this->row() !== false);
     }
 
+    /**
+     *
+     * @return array
+     */
     protected function row()
     {
         $this->load();
@@ -97,6 +172,11 @@ class CsvParser implements \Iterator
         return $this->row;
     }
 
+    /**
+     *
+     * @param array $array
+     * @return array 
+     */
     protected function convertArray(array $array)
     {
         if(!$this->charset) {

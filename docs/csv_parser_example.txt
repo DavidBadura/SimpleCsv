@@ -1,0 +1,18 @@
+Example File:
+
+name;email;age
+"David";"d.badura@gmx.de";23
+"Test";"test@example.org";100
+
+
+<?php
+
+$parser = new \DavidBadura\SimpleCsv\CsvParser('test.csv', ';');
+foreach($parser as $row) {
+    echo 'Name: ' . $row['name'] . '<br/>';
+    echo 'Email: ' . $row['email'] . '<br/>';
+    echo 'Age: ' . $row['age'] . '<br/>';
+    echo '<hr>';
+}
+
+?>

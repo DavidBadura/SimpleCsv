@@ -11,6 +11,5 @@
     },
     "require": {
         "php": ">=5.3"
-    },
-    "target-dir" : "DavidBadura/SimpleCsv"
+    }
 }

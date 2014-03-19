@@ -41,7 +41,7 @@ class CsvParser implements \Iterator
 
     /**
      *
-     * @var resources
+     * @var resource
      */
     protected $handle;
 

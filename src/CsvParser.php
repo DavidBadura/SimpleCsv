@@ -11,6 +11,14 @@ class CsvParser implements \Iterator
 
     /**
      *
+     * @var array
+     */
+    private $charsets = array(
+        'ISO-8859-1' => 'de_DE.iso885915@euro'
+    );
+
+    /**
+     *
      * @var string
      */
     protected $file;
@@ -65,9 +73,13 @@ class CsvParser implements \Iterator
      */
     public function __construct($file, $delimiter = ',', $charset = null)
     {
-        $this->file = $file;
+        $this->file      = $file;
         $this->delimiter = $delimiter;
-        $this->charset = $charset;
+        $this->charset   = $charset == 'UTF-8' ? null : $charset ;
+
+        if ($this->carset && !isset($this->charsets[$this->charset])) {
+            throw new \Exception(sprintf('charset "%s" is not supported', $this->charset));
+        }
     }
 
     /**
@@ -102,11 +114,7 @@ class CsvParser implements \Iterator
             throw new \Exception(sprintf('file "%s" can not read', $this->file));
         }
 
-        $this->header = fgetcsv($this->handle, 0, $this->delimiter);
-
-        if($this->header) {
-            $this->header = $this->convertArray($this->header);
-        }
+        $this->header = $this->getNextCsvRow();
 
         $this->loaded = true;
     }
@@ -157,38 +165,88 @@ class CsvParser implements \Iterator
 
     /**
      *
+     * @return int
+     */
+    public function getLine()
+    {
+        return $this->pointer + 2;
+    }
+
+    /**
+     *
      * @return array
      */
     protected function row()
     {
         $this->load();
+
         if (!$this->row) {
-            $this->row = fgetcsv($this->handle, 0, $this->delimiter);
-            if ($this->row !== false) {
-                $this->row = $this->convertArray($this->row);
-                $this->row = array_combine($this->header, $this->row);
+            $row = $this->getNextCsvRow();
+
+            if ($row !== false) {
+                if (count($this->header) != count($row)) {
+                    throw new \RuntimeException('Die Anzahl der Zeilen Felder stimmen nicht mit der Anzahl der Spaltenfelder Überein');
+                }
+
+                $this->row = array_combine($this->header, $row);
             }
         }
+
         return $this->row;
     }
 
     /**
      *
-     * @param array $array
-     * @return array 
+     * @return array
      */
-    protected function convertArray(array $array)
+    protected function getNextCsvRow()
     {
-        if(!$this->charset) {
-            return $array;
+        if (!$this->charset) {
+            $oldLang = $this->getLang();
+            $this->setLangByCharset($this->charset);
         }
 
-        foreach($array as $key => $value) {
-            $array[$key] = iconv($this->charset, 'UTF-8', $value);
+        $row = fgetcsv($this->handle, 0, $this->delimiter);
+
+        if (!$this->charset) {
+            $this->setLang($oldLang);
+
+            if (!is_array($row)) {
+                return $row;
+            }
+
+            foreach ($row as $key => $value) {
+                $row[$key] = iconv($this->charset, 'UTF-8', $value);
+            }
         }
 
-        return $array;
+        return $row;
     }
 
-}
+    /**
+     *
+     * @return string
+     */
+    protected function getLang()
+    {
+        return getenv("LANG");
+    }
 
+    /**
+     *
+     * @param string $lang
+     */
+    protected function setLang($lang)
+    {
+        putenv("LANG=" . $lang);
+    }
+
+    /**
+     *
+     * @param string $charset
+     */
+    protected function setLangByCharset($charset)
+    {
+        $this->setLang($this->charsets[$charset]);
+    }
+}

@@ -7,7 +7,7 @@
         "email" : "d.badura@gmx.de"
     }],
     "autoload": {
-        "psr-0": { "DavidBadura\\SimpleCsv": "src/" }
+        "psr-4": { "DavidBadura\\SimpleCsv": "src/" }
     },
     "require": {
         "php": ">=5.3"

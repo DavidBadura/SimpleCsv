@@ -161,7 +161,7 @@ class CsvParser implements \Iterator
      */
     public function valid()
     {
-        return ($this->row() !== false);
+        return ($this->row() !== false) && ($this->row() !== null);
     }
 
     /**

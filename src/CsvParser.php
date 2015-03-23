@@ -70,6 +70,7 @@ class CsvParser implements \Iterator
      * @param string $file
      * @param string $delimiter
      * @param string $charset
+     * @throws \Exception
      */
     public function __construct($file, $delimiter = ',', $charset = null)
     {
@@ -77,7 +78,7 @@ class CsvParser implements \Iterator
         $this->delimiter = $delimiter;
         $this->charset   = $charset == 'UTF-8' ? null : $charset ;
 
-        if ($this->carset && !isset($this->charsets[$this->charset])) {
+        if ($this->charset && !isset($this->charsets[$this->charset])) {
             throw new \Exception(sprintf('charset "%s" is not supported', $this->charset));
         }
     }

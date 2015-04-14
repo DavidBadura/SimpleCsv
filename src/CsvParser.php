@@ -202,14 +202,14 @@ class CsvParser implements \Iterator
      */
     protected function getNextCsvRow()
     {
-        if (!$this->charset) {
+        if ($this->charset) {
             $oldLang = $this->getLang();
             $this->setLangByCharset($this->charset);
         }
 
         $row = fgetcsv($this->handle, 0, $this->delimiter);
 
-        if (!$this->charset) {
+        if ($this->charset) {
             $this->setLang($oldLang);
 
             if (!is_array($row)) {

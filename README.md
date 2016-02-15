@@ -1,5 +1,9 @@
 # SimpleCsv
 
+[![Build Status](https://travis-ci.org/DavidBadura/SimpleCsv.svg?branch=master)](https://travis-ci.org/DavidBadura/SimpleCsv)
+
+## Example
+
 ```csv
 id;name
 1;foo

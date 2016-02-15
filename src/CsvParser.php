@@ -254,7 +254,7 @@ class CsvParser implements \Iterator
     {
         $this->setLang($this->charsets[$charset]);
     }
-    
+
     /**
      * @param array $row
      * @return array

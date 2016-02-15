@@ -8,6 +8,10 @@ namespace DavidBadura\SimpleCsv;
  */
 class CsvParser implements \Iterator
 {
+    /**
+     * @var string
+     */
+    static private $bom = "\xef\xbb\xbf";
 
     /**
      *
@@ -115,7 +119,7 @@ class CsvParser implements \Iterator
             throw new \Exception(sprintf('file "%s" can not read', $this->file));
         }
 
-        $this->header = $this->getNextCsvRow();
+        $this->header = $this->stripBom($this->getNextCsvRow());
 
         $this->loaded = true;
     }
@@ -250,4 +254,18 @@ class CsvParser implements \Iterator
     {
         $this->setLang($this->charsets[$charset]);
     }
+    
+    /**
+     * @param array $row
+     * @return array
+     */
+    protected function stripBom(array $row)
+    {
+        if (strpos($row[0], self::$bom) === 0) {
+            $row[0] = str_replace(self::$bom, '', $row[0]);
+        }
+
+        return $row;
+    }
+
 }

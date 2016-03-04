@@ -35,6 +35,12 @@ class CsvParser implements \Iterator
 
     /**
      *
+     * @var string
+     */
+    protected $enclosure;
+
+    /**
+     *
      * @var array
      */
     protected $header;
@@ -81,6 +87,7 @@ class CsvParser implements \Iterator
         $this->file      = $file;
         $this->delimiter = $delimiter;
         $this->charset   = $charset == 'UTF-8' ? null : $charset ;
+        $this->enclosure = '"';
 
         if ($this->charset && !isset($this->charsets[$this->charset])) {
             throw new \Exception(sprintf('charset "%s" is not supported', $this->charset));
@@ -190,7 +197,14 @@ class CsvParser implements \Iterator
 
             if ($row !== false) {
                 if (count($this->header) != count($row)) {
-                    throw new \RuntimeException('Die Anzahl der Zeilen Felder stimmen nicht mit der Anzahl der Spaltenfelder Überein');
+                    throw new \RuntimeException(
+                        sprintf(
+                            'the number of columns on line #%d [%d] does not match those from the header line [%d]',
+                            $this->getLine(),
+                            count($row),
+                            count($this->header)
+                        )
+                    );
                 }
 
                 $this->row = array_combine($this->header, $row);
@@ -211,7 +225,7 @@ class CsvParser implements \Iterator
             $this->setLangByCharset($this->charset);
         }
 
-        $row = fgetcsv($this->handle, 0, $this->delimiter);
+        $row = fgetcsv($this->handle, 0, $this->delimiter, $this->enclosure);
 
         if ($this->charset) {
             $this->setLang($oldLang);
@@ -263,9 +277,11 @@ class CsvParser implements \Iterator
     {
         if (strpos($row[0], self::$bom) === 0) {
             $row[0] = str_replace(self::$bom, '', $row[0]);
+            // enclosure must be trimmed manually on first column
+            // when having a BOM
+            $row[0] = trim($row[0], $this->enclosure);
         }
 
         return $row;
     }
-
 }

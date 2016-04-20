@@ -1,6 +1,6 @@
 {
     "name": "davidbadura/simple-csv",
-    "keywords": ["csv"],
+    "keywords": ["csv", "parser", "writer"],
     "license": "MIT",
     "authors": [{
         "name" : "David Badura",
@@ -10,7 +10,7 @@
         "psr-4": { "DavidBadura\\SimpleCsv\\": "src/" }
     },
     "require": {
-        "php": ">=5.3"
+        "php": "~5.3|~7.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^4.8.23"
